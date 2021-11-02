@@ -22,7 +22,9 @@ public class WritingGroups extends AuthoringEntities {
     public WritingGroups(String name, String email, String headWriter, int yearFormed) {
         super(name, email, "Writing Group");
         this.headWriter = headWriter;
+        super.setHeadWriter(headWriter);
         this.yearFormed = yearFormed;
+        super.setYearFormed(yearFormed);
     }
 
     public int getYearFormed() {

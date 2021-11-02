@@ -19,6 +19,12 @@ import javax.persistence.Table;
                   "WHERE title = ? and publisherName = ? ",
           resultClass = Books.class)
 
+@NamedNativeQuery(name = "Books.select.titleAuthoringEntity",
+        query = "SELECT* " +
+                "FROM books " +
+                "WHERE title = ? and authoringEntityName = ? ",
+        resultClass = Books.class)
+
 @NamedNativeQuery(name = "Books.select.catalog",
         query = "SELECT* " +
                 "FROM Books " +

@@ -13,13 +13,13 @@ import javax.persistence.Entity;
 @Entity
 // check Primary key
 @NamedNativeQuery(name = "AuthoringEntities.count.email",
-        query = "SELECT count(*)" +
-                "FROM AuthoringEntities" +
-                "WHERE email = ?")
+        query = "SELECT * " +
+                "FROM AuthoringEntities " +
+                "WHERE email = ? ")
 // returns all authors
 @NamedNativeQuery(name = "AuthoringEntities.catalog",
-        query = "SELECT *" +
-                "FROM AuthoringEntities" +
+        query = "SELECT * " +
+                "FROM AuthoringEntities " +
                 "ORDER BY name",
         resultClass = AuthoringEntities.class)
 

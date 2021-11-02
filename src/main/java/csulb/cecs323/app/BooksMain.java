@@ -1,7 +1,7 @@
 /**
  A class to record the teams formed by many individual authors.
  Homework Assignment: BOOKS
- @author 
+ @author
  @version 1.01 10/29/2021
  */
 
@@ -68,33 +68,67 @@ public class BooksMain {
       System.out.println ();
       System.out.println ("1. Creating New Objects (Authoring Entities, Publisher, book)");
       List <AuthoringEntities> authoringEntitiesList = new ArrayList<>();
+      // Check writingGroup1 is not in database and add
       WritingGroups writingGroup1 = new WritingGroups("Dream Team", "JKRowling@gmail.com", "J. K. Rowling", 2000);
-      authoringEntitiesList.add(writingGroup1);
+
+      List<AuthoringEntities> checkAuthor = manager.createNamedQuery("AuthoringEntities.count.email",
+              AuthoringEntities.class).setParameter(1, "JKRowling@gmail.com").getResultList();
+      if (checkAuthor.size() == 0) {
+         authoringEntitiesList.add(writingGroup1);
+      }
+      checkAuthor.clear();
+      // Check and add author1
       IndividualAuthors author1 = new IndividualAuthors("Toby J. Teorey", "TTeorey@gmail.com");
-      authoringEntitiesList.add(author1);
+      checkAuthor = manager.createNamedQuery("AuthoringEntities.count.email",
+              AuthoringEntities.class).setParameter(1, "TTeorey@gmail.com").getResultList();
+      if (checkAuthor.size() == 0) {
+         authoringEntitiesList.add(author1);
+      }
+      checkAuthor.clear();
+      // Check and add adHocTeam1
       AdHocTeams adHocTeam1 = new AdHocTeams("Larry Rockoff", "LRockoff@gmail.com");
-      authoringEntitiesList.add(adHocTeam1);
-      // Add an Individual Author to an existing Ad Hoc Team
+      checkAuthor = manager.createNamedQuery("AuthoringEntities.count.email",
+              AuthoringEntities.class).setParameter(1, "LRockoff@gmail.com").getResultList();
+      if (checkAuthor.size() == 0) {
+         authoringEntitiesList.add(adHocTeam1);
+      }
+      // Adding author to a Ad Hoc Team
       adHocTeam1.addAuthor(author1);
+      // Adding Ad Hoc Team to an individual author
       author1.addAdHocTeam(adHocTeam1);
       booksMain.createEntity (authoringEntitiesList);
+
       // PUBLISHER OBJECT
       List <Publishers> publishers = new ArrayList<>();
+      // Check that publisher isn't in database already and add
       Publishers publisher1 = new Publishers("Bloomsbury Publishing", "(888) 330-8477", "onlinesales@bloomsburyprofessional.com");
-      publishers.add(publisher1);
-      booksMain.createEntity (publishers);
+      List<Publishers> checkPublishers = manager.createNamedQuery("Publishers.select.getPublisher",
+              Publishers.class).setParameter(1, "Bloomsbury Publishing").getResultList();
+      if (checkPublishers.size() == 0) {
+         publishers.add(publisher1);
+         booksMain.createEntity (publishers);
+         System.out.println("Publisher is added.");
+      }
+
       // BOOKS OBJECT
       List <Books> books = new ArrayList<>();
+      // Check that book1 isn't in database already and add
       Books book1 = new Books("9780590353403", "Harry Potter and the Sorcerer's Stone", 1997, author1, publisher1);
-      books.add(book1);
-      booksMain.createEntity (books);
+      List<Books> checkBooks = manager.createNamedQuery("Books.select.titlePublisher",
+                      Books.class).setParameter(1, "Harry Potter and the Sorcerer's Stone")
+                     .setParameter(2, publisher1.getName()).getResultList();
+      if (checkBooks.size() == 0) {
+         books.add(book1);
+         booksMain.createEntity (books);
+         System.out.println("Book is added.");
+      }
 
       // 2. List all information about Objects (publisher, Book, Writing Group)
       System.out.println ();
       System.out.println ("2. List all information about Objects (publisher, Book, Writing Group)");
-      System.out.println(publisher1);
-      System.out.println(book1);
-      System.out.println(writingGroup1);
+      System.out.println (publisher1);
+      System.out.println (book1);
+      System.out.println (writingGroup1);
 
       tx.commit();
 
@@ -105,46 +139,74 @@ public class BooksMain {
 
       boolean done = false;
       while (!done) {
-         try {
-            List<Books> allBooks = manager.createNamedQuery("Books.select.catalog",
-                    Books.class).getResultList();
-            for (int i = 0; i < allBooks.size(); i++) {
-               System.out.println(allBooks.get(i));
-            }
-            System.out.println("Please enter the title of the book you want to delete: ");
-            Scanner removeInput = new Scanner(System.in);
-            String titleToDelete = removeInput.nextLine();
-            System.out.println(titleToDelete);
-            System.out.println("Please enter the name of the publisher of the book you want to delete: ");
-            String publisherToDelete = removeInput.nextLine();
-            List<Books> booksToDelete = manager.createNamedQuery("Books.select.titlePublisher",
-                    Books.class).setParameter(1, titleToDelete)
-                    .setParameter(2, publisherToDelete)
-                    .getResultList();
-            if (booksToDelete.size() > 0) {
-               Books book = manager.find(Books.class, booksToDelete.get(0).getISBN());
-               if (book != null) {
-                  manager.getTransaction().begin();
-                  manager.remove(book);
-                  manager.getTransaction().commit();
-               }
-               done = true;
-            } else {
-               System.out.println("The book you are looking for does not exist within the database.");
-               System.out.println("Please try again.");
-            }
-         } catch (Exception e) {
-            System.out.println("This books doesn't exist. Please try again.");
+
+         List<Books> allBooks = manager.createNamedQuery("Books.select.catalog",
+                 Books.class).getResultList();
+         for (int i = 0; i < allBooks.size(); i++) {
+            System.out.println(allBooks.get(i));
          }
+         System.out.println("Please enter the title of the book you want to delete: ");
+         Scanner removeInput = new Scanner(System.in);
+         String titleToDelete = removeInput.nextLine();
+         System.out.println("Please enter the name of the publisher of the book you want to delete: ");
+         String publisherToDelete = removeInput.nextLine();
+         // check books is in database
+         List<Books> booksToDelete = manager.createNamedQuery("Books.select.titlePublisher",
+                 Books.class).setParameter(1, titleToDelete)
+                 .setParameter(2, publisherToDelete)
+                 .getResultList();
+         if (booksToDelete.size() > 0) {
+            Books book = manager.find(Books.class, booksToDelete.get(0).getISBN());
+            if (book != null) {
+               manager.getTransaction().begin();
+               manager.remove(book);
+               manager.getTransaction().commit();
+               System.out.println("Book is deleted.");
+            }
+            done = true;
+         } else {
+            System.out.println("The book you are looking for does not exist within the database.");
+            System.out.println("Please try again.");
+         }
+      }
+
+      // Add new publisher
+      checkPublishers.clear();
+      Publishers publisher2 = new Publishers("St. Martin's Publishing Group", "(888) 420-5501", "foreignrights@stmartins.com");
+      checkPublishers = manager.createNamedQuery("Publishers.select.getPublisher",
+              Publishers.class).setParameter(1, "St. Martin's Publishing Group").getResultList();
+      if (checkPublishers.size() == 0) {
+         publishers.add(publisher2);
+         booksMain.createEntity (publishers);
+      }
+      // Add new book
+      checkBooks.clear();
+      Books book2 = new Books("9780545543675", "Divided We Fall", 2014, writingGroup1, publisher2);
+      checkBooks = manager.createNamedQuery("Books.select.titlePublisher",
+                      Books.class).setParameter(1, "Divided We Fall")
+              .setParameter(2, publisher2.getName()).getResultList();
+      books.clear();
+      if (checkBooks.size() == 0) {
+         books.add(book2);
+         booksMain.createEntity (books);
       }
 
       // 4. Update a book
       System.out.println ();
       System.out.println ("4. Update a book");
       manager.getTransaction().begin();
-      book1.setAuthoringEntity(writingGroup1);
-      manager.merge(book1);
-      manager.getTransaction().commit();
+      // check book is in the database
+      List<Publishers> checkBookAuthor = manager.createNamedQuery("Books.select.titleAuthoringEntity",
+              Publishers.class).setParameter(1, "Divided We Fall" )
+              .setParameter(2, writingGroup1.getName()).getResultList();
+      // update book to new author
+      book2.setAuthoringEntity(adHocTeam1);
+      // update changes to the database
+      if (checkBookAuthor.size() == 0) {
+         manager.merge(book2);
+         manager.getTransaction().commit();
+      }
+
 
       // 5. List Primary Key of every row of Publishers, Books, authoring entities
       System.out.println ();

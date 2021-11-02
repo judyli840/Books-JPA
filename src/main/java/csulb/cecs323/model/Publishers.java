@@ -18,11 +18,6 @@ import java.lang.Object;
 
 @Entity
 
-@NamedNativeQuery(name = "Publishers.count.name",
-        query = "SELECT count(*)" +
-                "FROM Publishers" +
-                "WHERE name = ?")
-
 @NamedNativeQuery(name = "Publishers.select.getPublisher",
         query = "SELECT * " +
                 "FROM Publishers " +
