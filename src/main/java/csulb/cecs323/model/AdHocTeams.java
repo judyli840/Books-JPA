@@ -7,25 +7,25 @@
 
 package csulb.cecs323.model;
 
-import javax.persistence.CascadeType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
 public class AdHocTeams extends AuthoringEntities {
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable (name = "adHocTeam",
-                joinColumns = @JoinColumn(name = "adHocTeamEmail"),
-                inverseJoinColumns = @JoinColumn(name = "individualAuthorEmail"))
+    @JoinTable (name = "adHocTeamMember",
+                joinColumns = @JoinColumn(name = "adHocTeamEmail", nullable=false, columnDefinition="varchar(30)"),
+                inverseJoinColumns = @JoinColumn(name = "individualAuthorEmail", nullable=false, columnDefinition="varchar(30)"))
     private List<IndividualAuthors> individualAuthorsList;
 
     public AdHocTeams(String name, String email) {
         super(name, email, "Ad Hoc Team");
         this.individualAuthorsList = new ArrayList<>();
     }
+
+    public AdHocTeams() {}
 
     public List<IndividualAuthors> getIndividualAuthorsList() {
         return individualAuthorsList;
@@ -46,9 +46,9 @@ public class AdHocTeams extends AuthoringEntities {
     }
 
     public String toString () {
-        String temp = "This team contains:\n";
-        for (Object o: individualAuthorsList) {
-            temp += "Author: " + o + "\n";
+        String temp = "";
+        for (IndividualAuthors o: individualAuthorsList) {
+            temp += "   Author: " + o.getName() + "\n";
         }
         return temp;
     }

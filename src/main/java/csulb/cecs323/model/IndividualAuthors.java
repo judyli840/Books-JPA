@@ -6,18 +6,17 @@
  */
 package csulb.cecs323.model;
 
-import javax.persistence.CascadeType;
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.ManyToMany;
-import javax.persistence.NamedNativeQuery;
+import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.Entity;
 
-
+@Entity
 @NamedNativeQuery(name = "IndividualAuthors.catalog",
-                  query = "SELECT *" +
-                          "FROM AuthoringEntities" +
-                          "WHERE authoringEntityType" +
-                          "ORDER BY name",
+                  query = "SELECT * " +
+                          "FROM AuthoringEntities " +
+                          "WHERE authoringEntityType = 'Individual Authors'" +
+                          "ORDER BY email",
                   resultClass = IndividualAuthors.class
 )
 
@@ -30,6 +29,7 @@ public class IndividualAuthors extends AuthoringEntities {
 
     public IndividualAuthors(String name, String email) {
         super(name, email, "Individual Authors");
+        adHocTeamsList = new ArrayList<>();
     }
 
     public List<AdHocTeams> getAdHocTeams() {
@@ -53,8 +53,8 @@ public class IndividualAuthors extends AuthoringEntities {
     @Override
     public String toString () {
         String temp = "This Author is in the following teams: \n";
-        for (Object o: adHocTeamsList) {
-            temp += "Team: " + o + "\n";
+        for (AdHocTeams team: adHocTeamsList) {
+            temp += "Team: " + team + "\n";
         }
         return temp;
     }

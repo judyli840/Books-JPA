@@ -1,7 +1,9 @@
 package csulb.cecs323.model;
 
 import javax.persistence.*;
-import java.util.Objects;
+import java.lang.*;
+import java.lang.Object;
+
 /*
  * Licensed under the Academic Free License (AFL 3.0).
  *     http://opensource.org/licenses/AFL-3.0
@@ -15,32 +17,41 @@ import java.util.Objects;
  */
 
 @Entity
+
 @NamedNativeQuery(name = "Publishers.count.name",
         query = "SELECT count(*)" +
                 "FROM Publishers" +
                 "WHERE name = ?")
-@NamedNativeQuery(name = "Publishers.count.phone",
-        query = "SELECT count(*)" +
-                "FROM Publishers" +
-                "WHERE phone = ?")
-@NamedNativeQuery(name = "Publishers.count.email",
-        query = "SELECT count(*)" +
-                "FROM Publishers" +
-                "WHERE email = ?")
-// I could have avoided uniqueConstraints and just done
-// one constraint, but this was more fun.
+
+@NamedNativeQuery(name = "Publishers.select.getPublisher",
+        query = "SELECT * " +
+                "FROM Publishers " +
+                "WHERE name = ? ",
+        resultClass = Publishers.class)
+
+@NamedNativeQuery(name = "Publishers.select.getPK",
+        query = "SELECT name " +
+                "FROM Publishers " +
+                "ORDER BY name ",
+        resultClass = Publishers.class)
+
+
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"phone"}),
-        @UniqueConstraint(columnNames = {"email"})})
+                            @UniqueConstraint(columnNames = {"email"})})
 /** A person or group responsible for preparing books to go on sale. */
 public class Publishers {
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @Column(nullable=false, length = 80)
     private String name;
-    @Column(nullable=false, length = 64)
+
+    @Column(nullable=false, length = 24)
     private String phone;
-    @Column(nullable=false, length = 64)
+
+    @Column(nullable=false, length = 80)
     private String email;
+
     public Publishers() {}
+
     public Publishers (String name, String phone, String email) {
         this.name = name;
         this.phone = phone;
@@ -73,16 +84,15 @@ public class Publishers {
 
     @Override
     public String toString () {
-        return "Name: " + this.name;
+        return "Publisher- \n" +
+                "   Name: " + this.name + "\n" +
+                "   Phone: " + this.phone + "\n" +
+                "   email: " + this.email;
     }
+
     @Override
     public boolean equals (Object o) {
         Publishers publisher = (Publishers) o;
         return this.getName() == publisher.getName();
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(this.getName());
     }
 }

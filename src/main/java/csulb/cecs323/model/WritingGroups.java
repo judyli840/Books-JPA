@@ -7,8 +7,9 @@
 package csulb.cecs323.model;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 
-
+@Entity
 public class WritingGroups extends AuthoringEntities {
     @Column(nullable = true, length = 100)
     private String headWriter;
@@ -42,8 +43,10 @@ public class WritingGroups extends AuthoringEntities {
 
     @Override
     public String toString () {
-        return "email: " + super.getEmail() + "\nname: " + super.getName() + "Head Writer: " + this.headWriter
-                + "\nYear Formed: " + this.yearFormed;
+        return "Writing Group- \n   email: " + super.getEmail() +
+                "\n    name: " + super.getName() +
+                "\n    Head Writer: " + this.headWriter +
+                "\n    Year Formed: " + this.yearFormed;
     }
 
     @Override
