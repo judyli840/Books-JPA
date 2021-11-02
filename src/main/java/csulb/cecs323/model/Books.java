@@ -1,7 +1,7 @@
 /**
- A class to record information about each book.
+ A class to record the books.
  Homework Assignment: BOOKS
- @author Judy Li
+ @author Judy Li, Kenneth Valero, Ron Riley Co
  @version 1.01 10/29/2021
  */
 
@@ -47,75 +47,144 @@ import javax.persistence.Table;
                             @UniqueConstraint(columnNames = {"title", "authoringEntityName"})})
 public class Books
 {
+    /**
+     * The ISBN of the book.
+     */
     @Id
     @Column(nullable=false, length = 17)
     private String ISBN;
 
+    /**
+     * The title of the book.
+     */
     @Column(nullable=false, length = 80)
     private String title;
 
+    /**
+     * The year of publishing of the book.
+     */
     @Column(nullable=false)
     private int yearPublished;
 
+    /**
+     * The publisher of the book.
+     */
     @ManyToOne
     @JoinColumn(name = "publisherName", columnDefinition="varchar(80)")
     private Publishers publisher;
 
+    /**
+     * The authoring entity of the book.
+     */
     @ManyToOne
     @JoinColumn(name = "authoringEntityName", columnDefinition="varchar(30)")
     private AuthoringEntities authoringEntity;
 
-    public Books() {}
+    /**
+     * Default constructor of the writing group.
+     */
+    public Books() {} //Ends default constructor
+
+    /**
+     * The overloaded constructor of the writing group.
+     * @param ISBN The ISBN of the book.
+     * @param title The title of the book.
+     * @param year The year of publishing of the book.
+     * @param authoring_entity The authoring entity of the book.
+     * @param publisher The publisher of the book.
+     */
     public Books(String ISBN, String title, int year, AuthoringEntities authoring_entity, Publishers publisher) {
         this.ISBN = ISBN;
         this.title = title;
         this.yearPublished = year;
         this.authoringEntity = authoring_entity;
         this.publisher = publisher;
-    }
+    } //Ends overloaded constructor
 
+    /**
+     * Retrieve the year that the group was formed.
+     * @return the year of formation.
+     */
     public String getISBN() {
         return ISBN;
-    }
+    } //Ends ISBN getter
 
+    /**
+     * Retrieve the title of the book.
+     * @return the year of formation.
+     */
     public String getTitle() {
         return title;
-    }
+    } //Ends title getter
 
+    /**
+     * Retrieve the year published of the book.
+     * @return the year of formation.
+     */
     public int getYearPublished() {
         return yearPublished;
-    }
+    } //Ends year published getter
 
+    /**
+     * Retrieve the authoring entity of the book.
+     * @return the year of formation.
+     */
     public AuthoringEntities getAuthoringEntity() {
         return authoringEntity;
-    }
+    } //Ends authoring entity getter
 
+    /**
+     * Retrieve the publisher of the book.
+     * @return the year of formation.
+     */
     public Publishers getPublisher() {
         return publisher;
-    }
+    } //Ends publisher getter
 
-    public void setISBN(String x) {
-        this.ISBN = x;
-    }
+    /**
+     * Sets the ISBN to a new value.
+     * @param isbn The ISBN of a book.
+     */
+    public void setISBN(String isbn) {
+        this.ISBN = isbn;
+    } //Ends setISBN method
 
-    public void setTitle(String x) {
-        this.title = x;
-    }
+    /**
+     * Sets the title to a new value.
+     * @param title The title of a book.
+     */
+    public void setTitle(String title) {
+        this.title = title;
+    } //Ends setTitle method
 
+    /**
+     * Sets the year published to a new value.
+     * @param year The year published of a book.
+     */
+    public void setYearPublished(int year) {
+        this.yearPublished = year;
+    } //Ends setYearPublished method
 
-    public void setYearPublished(int x) {
-        this.yearPublished = x;
-    }
+    /**
+     * Sets the authoring entity to a new value.
+     * @param author The authoring entity of a book.
+     */
+    public void setAuthoringEntity(AuthoringEntities author) {
+        this.authoringEntity = author;
+    } //Ends setAuthoringEntity method
 
-    public void setAuthoringEntity(AuthoringEntities x) {
-        this.authoringEntity = x;
-    }
+    /**
+     * Sets the publisher name to a new value.
+     * @param name The publisher of a book.
+     */
+    public void setPublisherName(Publishers name) {
+        this.publisher = name;
+    } //Ends setPublisherName method
 
-    public void setPublisherName(Publishers x) {
-        this.publisher = x;
-    }
-
-
+    /**
+     * An overridden function to return the information about the Books class.
+     * @return A listing of information about the Books class.
+     */
     @Override
     public String toString () {
         return "Book - \n   ISBN: " + this.ISBN
@@ -123,15 +192,16 @@ public class Books
                 + "\n   Published: " + this.yearPublished
                 + "\n   Authoring Entity: " + authoringEntity.getName()
                 + "\n   Publisher: " + this.publisher.getName();
-    }
-    @Override
-    public boolean equals (Object o) {
-        Books b = (Books) o;
-        return this.getISBN() == b.getISBN();
-    }
+    } //Ends toString method
 
+    /**
+     * Check to see if one books is the same as the passed in books.
+     * @param object The books to be compared.
+     * @return  True if both books are equal. False otherwise.
+     */
     @Override
-    public int hashCode() {
-        return Objects.hash(this.getISBN());
-    }
-}
+    public boolean equals (Object object) {
+        Books b = (Books) object;
+        return this.getISBN() == b.getISBN();
+    } //Ends equals method
+} //Ends Books class

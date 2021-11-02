@@ -1,7 +1,7 @@
 /**
- A class to record the teams formed by many individual authors.
+ The main class
  Homework Assignment: BOOKS
- @author
+ @author Judy Li, Kenneth Valero, Ron Riley Co
  @version 1.01 10/29/2021
  */
 
@@ -61,6 +61,7 @@ public class BooksMain {
 
       LOGGER.fine("Begin of Transaction");
       EntityTransaction tx = manager.getTransaction();
+
 
       tx.begin();
       // 1. Creating New Objects (Authoring Entities, Publisher, book)
@@ -123,6 +124,7 @@ public class BooksMain {
          System.out.println("Book is added.");
       }
 
+
       // 2. List all information about Objects (publisher, Book, Writing Group)
       System.out.println ();
       System.out.println ("2. List all information about Objects (publisher, Book, Writing Group)");
@@ -131,6 +133,7 @@ public class BooksMain {
       System.out.println (writingGroup1);
 
       tx.commit();
+
 
       // 3. Delete a Book
       // Prompt the user to delete an existing book (ask for title and publisher)
@@ -164,7 +167,8 @@ public class BooksMain {
                System.out.println("Book is deleted.");
             }
             done = true;
-         } else {
+         }
+         else {
             System.out.println("The book you are looking for does not exist within the database.");
             System.out.println("Please try again.");
          }
@@ -190,6 +194,7 @@ public class BooksMain {
          books.add(book2);
          booksMain.createEntity (books);
       }
+
 
       // 4. Update a book
       System.out.println ();
@@ -267,7 +272,8 @@ public class BooksMain {
       if (publishers.size() == 0) {
          // Invalid style name passed in.
          return null;
-      } else {
+      }
+      else {
          // Return the style object that they asked for.
          return publishers.get(0);
       }
